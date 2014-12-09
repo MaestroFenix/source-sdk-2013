@@ -1,10 +1,10 @@
 "GameInfo"
 {
-	game	"My First HL2MP Mod"
+	game	"Alchemy: The broken seal"
 	title	"HALF+LIFE'"
 	title2	"deathmatch mod"
 	type multiplayer_only
-	nomodels 0
+	nomodels 1
 	nohimodel 1
 	nocrosshair 1
 	hidden_maps
@@ -12,7 +12,7 @@
 		"test_speakers"		1
 		"test_hardware"		1
 	}
-	supportsvr	1
+	supportsvr	0
 
 
 	FileSystem

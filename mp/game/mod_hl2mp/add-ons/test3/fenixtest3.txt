@@ -1,0 +1,2 @@
+vgui="playermodels/combine_super_soldier"
+model="models/combine_super_soldier"

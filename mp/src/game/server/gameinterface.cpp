@@ -565,6 +565,112 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL, INTERFACEVERSI
 // When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
 COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 9 );
 
+
+//Fenix
+static void MountVPKAddons(const char *pWildcard, char const *current)
+{
+	char path[512];
+	if (current[0])
+	{
+		Q_snprintf(path, sizeof(path), "%s/*.*", current);
+	}
+	else
+	{
+		Q_snprintf(path, sizeof(path), "*.*");
+	}
+
+	Q_FixSlashes(path);
+
+
+	FileFindHandle_t findHandle;
+	const char *pFilename = filesystem->FindFirstEx(path, "GAME", &findHandle);
+
+	while (pFilename)
+	{
+		//Loads VPK addons if it finds one
+		if (V_stristr(pFilename, ".vpk"))
+		{
+
+			char playermodeldir1[512] = "";
+
+			V_strcpy(playermodeldir1, current);
+			V_strcat(playermodeldir1, "/", sizeof(playermodeldir1)); //We have to add an slash to the path since it doesnt include it
+			V_strcat(playermodeldir1, pFilename, sizeof(playermodeldir1));
+
+			Msg("Found '%s'\n", playermodeldir1);
+
+			char pGameDir[MAX_PATH];
+			engine->GetGameDir(pGameDir, MAX_PATH);
+
+			filesystem->AddSearchPath(UTIL_VarArgs("%s/%s", pGameDir, playermodeldir1), "GAME");
+
+			/*Msg("Mounted '%s/%s'\n", pGameDir, playermodeldir1);
+			char buf2[1024];
+			filesystem->GetSearchPath("MOD", true, buf2, sizeof(buf2) - 1);
+			DevMsg("New Search Paths: %s\n", buf2);*/
+
+		}
+
+		if (filesystem->FindIsDirectory(findHandle)){
+
+			//Get out . and .. directories
+			if ((Q_stricmp(pFilename, ".")) && (Q_stricmp(pFilename, "..")))
+			{
+				//Adds the current dir, so it adds to the path
+				char nextdir[512];
+				if (current[0])
+				{
+					Q_snprintf(nextdir, sizeof(nextdir), "%s/%s", current, pFilename);
+				}
+				else
+				{
+					Q_snprintf(nextdir, sizeof(nextdir), "%s", pFilename);
+				}
+
+				char playermodeldir1[32] = "add-ons";
+
+				//Go again search the file, with the new path
+				MountVPKAddons(playermodeldir1, nextdir);
+			}
+		}
+		//If is NOT . or .. directories...
+		if ((Q_stricmp(pFilename, ".")) && (Q_stricmp(pFilename, "..")))
+		{
+
+			if (filesystem->FindIsDirectory(findHandle))
+			{
+
+				pFilename = filesystem->FindNext(findHandle); //keep searching
+			}
+			else{
+
+				//Checks if the file is a txt file
+				char ext[512];
+				Q_ExtractFileExtension(pFilename, ext, sizeof(ext));
+
+				if (!Q_stricmp(ext, "txt"))
+				{
+					pFilename = filesystem->FindNext(findHandle); //keep searching
+				}
+
+				else
+				{
+					pFilename = filesystem->FindNext(findHandle); //keep searching
+				}
+
+			}
+
+		}
+		else
+		{
+			pFilename = filesystem->FindNext(findHandle); //keep searching
+		}
+	}
+	filesystem->FindClose(findHandle);
+
+}
+
+
 bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory, 
 		CreateInterfaceFn physicsFactory, CreateInterfaceFn fileSystemFactory, 
 		CGlobalVars *pGlobals)
@@ -636,6 +742,10 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 	// Yes, both the client and game .dlls will try to Connect, the soundemittersystem.dll will handle this gracefully
 	if ( !soundemitterbase->Connect( appSystemFactory ) )
 		return false;
+
+	//Fenix
+	MountVPKAddons("add-ons", "add-ons");
+
 
 	// cache the globals
 	gpGlobals = pGlobals;

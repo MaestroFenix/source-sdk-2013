@@ -416,11 +416,12 @@ void CHL2MP_Player::SetPlayerTeamModel( void )
 void CHL2MP_Player::SetPlayerModel( void )
 {
 	const char *szModelName = NULL;
-	const char *pszCurrentModelName = modelinfo->GetModelName( GetModel());
+	//const char *pszCurrentModelName = modelinfo->GetModelName( GetModel());
 
 	szModelName = engine->GetClientConVarValue( engine->IndexOfEdict( edict() ), "cl_playermodel" );
 
-	if ( ValidatePlayerModel( szModelName ) == false )
+	//Fenix: deactivated so we can use any model we want
+/*	if ( ValidatePlayerModel( szModelName ) == false )
 	{
 		char szReturnString[512];
 
@@ -468,11 +469,11 @@ void CHL2MP_Player::SetPlayerModel( void )
 		{
 			m_iModelType = TEAM_COMBINE;
 		}
-	}
+	}*/
 
-	int modelIndex = modelinfo->GetModelIndex( szModelName );
+	//int modelIndex = modelinfo->GetModelIndex( szModelName );
 
-	if ( modelIndex == -1 )
+	/*if ( modelIndex == -1 )
 	{
 		szModelName = "models/Combine_Soldier.mdl";
 		m_iModelType = TEAM_COMBINE;
@@ -481,8 +482,10 @@ void CHL2MP_Player::SetPlayerModel( void )
 
 		Q_snprintf( szReturnString, sizeof (szReturnString ), "cl_playermodel %s\n", szModelName );
 		engine->ClientCommand ( edict(), szReturnString );
-	}
+	}*/
 
+	//Fenix: Needed precache for avoid a crash
+	PrecacheModel(szModelName);
 	SetModel( szModelName );
 	SetupPlayerSoundsByModel( szModelName );
 
