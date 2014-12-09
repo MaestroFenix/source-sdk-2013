@@ -57,11 +57,6 @@
 	}
 	"11"
 	{
-		"label" "MOD OPTIONS"
-		"command" "engine OpenNewPlayermodelPanel"
-	}
-	"12"//11
-	{
 		"label" "#GameUI_GameMenu_Quit"
 		"command" "Quit"
 	}

@@ -1,9 +1,9 @@
 "GameInfo"
 {
-	game 		"Alchemy: The conflict never ends"
+	game 		"My First HL2 Mod"
 	title 		"HALF-LIFE'"
 	title2		""
-	supportsvr	0
+	supportsvr	1
 
 	type		singleplayer_only
 

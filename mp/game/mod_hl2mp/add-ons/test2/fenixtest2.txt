@@ -1,2 +1,0 @@
-vgui="playermodels/combine_soldier_prisonguard"
-model="models/combine_soldier_prisonguard"

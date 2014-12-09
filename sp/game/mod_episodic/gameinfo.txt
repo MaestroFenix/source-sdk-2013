@@ -1,9 +1,9 @@
 "GameInfo"
 {
-	game 		"Alchemy: The conflict is far from over"
+	game 		"My First Episodic Mod"
 	title 		"HALF-LIFE'"
 	title2		""
-	supportsvr	0
+	supportsvr	1
 
 	type		singleplayer_only
 
